@@ -4,9 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Distribution Center</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header { background-color: #f2f2f2; padding: 10px; text-align: center; }
+        .catalog { display: flex; flex-wrap: wrap; justify-content: space-around; padding: 20px; }
+        .product { border: 1px solid #ccc; margin: 10px; padding: 10px; width: 30%; }
+        footer { background-color: #f2f2f2; padding: 10px; text-align: center; }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://whatsapp.com/send?phone=1234567890">WhatsApp Order</script>
 </head>
 <body>
-    <h1>Welcome to the Smart Distribution Center</h1>
-    <p>This web application is designed to manage and optimize inventory distribution.</p>
+    <header>
+        <h1>Smart Distribution Center</h1>
+        <div>
+            <button onclick="switchLanguage('en')">English</button>
+            <button onclick="switchLanguage('es')">Español</button>
+        </div>
+    </header>
+    <div class="catalog">
+        <!-- Products will be loaded here -->
+    </div>
+    <footer>
+        <p>&copy; 2026 Smart Distribution Center</p>
+    </footer>
+    <script>
+        // Firebase configuration
+        var firebaseConfig = {
+            apiKey: "your_api_key",
+            authDomain: "your_project_id.firebaseapp.com",
+            databaseURL: "https://your_project_id.firebaseio.com",
+            projectId: "your_project_id",
+            storageBucket: "your_project_id.appspot.com",
+            messagingSenderId: "your_messaging_sender_id",
+            appId: "your_app_id"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        function loadProducts() {
+            var productsRef = firebase.database().ref('products');
+            productsRef.on('value', (snapshot) => {
+                const catalog = document.querySelector('.catalog');
+                catalog.innerHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const product = childSnapshot.val();
+                    catalog.innerHTML += `<div class='product'><h2>${product.name}</h2><p>${product.description}</p><p>Price: $${product.price}</p><button onclick="whatsappOrder('${product.phone}')">Order on WhatsApp</button></div>`;
+                });
+            });
+        }
+
+        function switchLanguage(lang) { /* Language switching logic */ }
+        function whatsappOrder(phone) { window.open(`https://wa.me/${phone}`); }
+        loadProducts();
+    </script>
 </body>
 </html>
